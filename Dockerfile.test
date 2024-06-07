@@ -1,0 +1,17 @@
+# Use an official Golang image as the base image
+FROM golang:1.22
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Copy go.mod and go.sum files
+COPY go.mod go.sum ./
+
+# Install dependencies
+RUN go mod download
+
+# Copy the source code into the container
+COPY . .
+
+# Run the tests
+CMD ["go", "test", "-v", "-count=1", "-tags=e2e", "./tests/e2e/..."]
