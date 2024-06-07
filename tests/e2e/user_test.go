@@ -17,7 +17,7 @@ func (s *GqlTestSuite) TestCreateAndGetUser() {
 	inputReq := `{
 		"name": "Jon",
 		"password": "12345678",
-		"email": "joa@gmail.com"
+		"email":"joa2@gmail.com"
 	}`
 	req, err := http.NewRequest("POST", "/api/v1/users/register", strings.NewReader(inputReq))
 	if err != nil {
@@ -35,7 +35,7 @@ func (s *GqlTestSuite) TestCreateAndGetUser() {
 		s.T().Fatal(err)
 	}
 
-	s.Equal(userData.Data.Email, "joa@gmail.com")
+	s.Equal(userData.Data.Email, "joa2@gmail.com")
 
 	// Get User
 	req2, err := http.NewRequest("GET", fmt.Sprintf("/api/v1/users/%s", userData.Data.ID), nil)

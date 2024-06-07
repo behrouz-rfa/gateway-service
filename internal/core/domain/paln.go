@@ -10,7 +10,7 @@ const (
 type Plan struct {
 	Base
 	UserID      string `gorm:"unique"`
-	Name        string `gorm:"size:255;not null;unique" json:"name"`
+	Name        string `gorm:"size:255;null" json:"name"`
 	CreditsUsed int    `json:"creditsUsed"` // Requests per hour
 	CreditLimit int    `json:"creditLimit"` // Maximum credits per user
 }

@@ -1,4 +1,4 @@
-//go:build e2e
+//#go:build e2e
 
 package gql
 
@@ -72,7 +72,7 @@ func (s *GqlTestSuite) SetupSuite() {
 	}
 
 	gptClient := &MockOpenAIClient{
-		mockCreateChatCompletion: func(ctx context.Context, req openai.ChatCompletionRequest) (*openai.ChatCompletionResponse, error) {
+		MockCreateChatCompletion: func(ctx context.Context, req openai.ChatCompletionRequest) (*openai.ChatCompletionResponse, error) {
 			return msg, nil
 		},
 	}
@@ -138,4 +138,13 @@ func dropSQLiteDatabase(db *gorm.DB) error {
 
 	// Assuming DSN is the file path for SQLite file-based database
 	return os.Remove(dsn)
+}
+
+// Mock client implementing the OpenAIClient interface
+type MockOpenAIClient struct {
+	MockCreateChatCompletion func(ctx context.Context, req openai.ChatCompletionRequest) (*openai.ChatCompletionResponse, error)
+}
+
+func (m *MockOpenAIClient) CreateChatCompletion(ctx context.Context, req openai.ChatCompletionRequest) (*openai.ChatCompletionResponse, error) {
+	return m.MockCreateChatCompletion(ctx, req)
 }

@@ -3,10 +3,8 @@
 package gql
 
 import (
-	"context"
 	"github.com/behrouz-rfa/gateway-service/internal/core/common"
 	"github.com/goccy/go-json"
-	"github.com/sashabaranov/go-openai"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -58,13 +56,4 @@ func (s *GqlTestSuite) TestAiUser() {
 		s.T().Fatal(err)
 	}
 
-}
-
-// Mock client implementing the OpenAIClient interface
-type MockOpenAIClient struct {
-	MockCreateChatCompletion func(ctx context.Context, req openai.ChatCompletionRequest) (*openai.ChatCompletionResponse, error)
-}
-
-func (m *MockOpenAIClient) CreateChatCompletion(ctx context.Context, req openai.ChatCompletionRequest) (*openai.ChatCompletionResponse, error) {
-	return m.MockCreateChatCompletion(ctx, req)
 }
