@@ -15,6 +15,7 @@ The Gateway Service is a backend service that interacts with various external AP
 
 ## Features
 - **Caching:** Use Redis for caching responses to improve performance, with optimization for similar keys using cosine similarity.
+- **Rate Limiter:** 100 request per hour for each ip but you can change it in .env
 - **AI Text Generation:** Utilize OpenAI's GPT model for generating text.
 - **IP Geolocation:** Retrieve geolocation information based on IP addresses.
 - **User Plan Management:** Manage user plans and credits.
