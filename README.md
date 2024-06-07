@@ -14,10 +14,10 @@ The Gateway Service is a backend service that interacts with various external AP
 - [License](#license)
 
 ## Features
+- **Caching:** Use Redis for caching responses to improve performance, with optimization for similar keys using cosine similarity.
 - **AI Text Generation:** Utilize OpenAI's GPT model for generating text.
 - **IP Geolocation:** Retrieve geolocation information based on IP addresses.
 - **User Plan Management:** Manage user plans and credits.
-- **Caching:** Use Redis for caching responses to improve performance, with optimization for similar keys using cosine similarity.
 - **Authentication:** Secure API endpoints with JWT-based authentication.
 
 ## Installation
