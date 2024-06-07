@@ -1,0 +1,413 @@
+basePath: /api/v1
+definitions:
+  domain.IpInfo:
+    properties:
+      anycast:
+        type: boolean
+      bogon:
+        type: boolean
+      city:
+        type: string
+      country:
+        type: string
+      country_flag_url:
+        type: string
+      hostname:
+        type: string
+      ip:
+        type: string
+      isEU:
+        type: boolean
+      loc:
+        type: string
+      org:
+        type: string
+      postal:
+        type: string
+      region:
+        type: string
+      timezone:
+        type: string
+    type: object
+  handlers.aiResponse:
+    properties:
+      msg:
+        type: string
+    type: object
+  handlers.errorResponse:
+    properties:
+      messages:
+        example:
+        - Error message 1
+        - ' Error message 2'
+        items:
+          type: string
+        type: array
+      success:
+        example: false
+        type: boolean
+    type: object
+  handlers.loginRequest:
+    properties:
+      email:
+        example: jondoa
+        type: string
+      password:
+        example: "12345678"
+        minLength: 8
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  handlers.registerRequest:
+    properties:
+      email:
+        example: doa@gmail.com
+        type: string
+      name:
+        example: Jon
+        type: string
+      password:
+        example: "12345678"
+        minLength: 8
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  handlers.requestAi:
+    properties:
+      content:
+        example: hi ai who are you?
+        type: string
+    required:
+    - content
+    type: object
+  handlers.response:
+    properties:
+      data: {}
+      message:
+        example: Success
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+  handlers.userResponse:
+    type: object
+info:
+  contact:
+    email: behrouz-rfa@gmail.com
+    name: Behrouz R Faris
+    url: https://github.com/behrouz-rfa/gateway-service
+  description: This is a simple RESTful service
+  license:
+    name: MIT
+  title: GatewayService
+  version: "1.0"
+paths:
+  /geo/{ip}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve geolocation information for a given IP address.
+      parameters:
+      - description: IP address
+        in: path
+        name: ip
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Geolocation information retrieved successfully
+          schema:
+            $ref: '#/definitions/handlers.userResponse'
+        "400":
+          description: 'Validation error: IP address is required'
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "401":
+          description: 'Unauthorized error: Invalid or missing authentication token'
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: 'Data not found error: No geolocation information found for
+            the given IP address'
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "409":
+          description: Data conflict error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: 'Internal server error: Failed to retrieve geolocation information'
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get Geolocation Information
+      tags:
+      - GEO
+  /ipinfo/{ip}:
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information for a specified IP address.
+      parameters:
+      - description: IP address
+        in: path
+        name: ip
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: IP information retrieved successfully
+          schema:
+            $ref: '#/definitions/domain.IpInfo'
+        "400":
+          description: 'Validation error: IP address is required'
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "401":
+          description: 'Unauthorized error: Invalid or missing authentication token'
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: 'Data not found error: No information found for the given IP
+            address'
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "409":
+          description: Data conflict error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: 'Internal server error: Failed to retrieve IP information'
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Retrieve IP Information
+      tags:
+      - IP
+  /openai:
+    post:
+      consumes:
+      - application/json
+      description: Create a request to get a response from the AI
+      parameters:
+      - description: AI request payload
+        in: body
+        name: requestAi
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.requestAi'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: AI response returned successfully
+          schema:
+            $ref: '#/definitions/handlers.aiResponse'
+        "400":
+          description: 'Validation error: Invalid request payload'
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "401":
+          description: 'Unauthorized error: Invalid or missing authentication token'
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "409":
+          description: Data conflict error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: 'Internal server error: Failed to process AI request'
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Send a request to AI
+      tags:
+      - AI
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user by id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deleted
+          schema:
+            $ref: '#/definitions/handlers.response'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "401":
+          description: Unauthorized error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "403":
+          description: Forbidden error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a user
+      tags:
+      - Users
+    get:
+      consumes:
+      - application/json
+      description: Get a user by id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User displayed
+          schema:
+            $ref: '#/definitions/handlers.userResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get a user
+      tags:
+      - Users
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: Register request
+        in: body
+        name: loginRequest
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.loginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User created
+          schema:
+            $ref: '#/definitions/handlers.userResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "401":
+          description: Unauthorized error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "409":
+          description: Data conflict error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: Login user
+      tags:
+      - Users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: create a new user account
+      parameters:
+      - description: Register request
+        in: body
+        name: registerRequest
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.registerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User created
+          schema:
+            $ref: '#/definitions/handlers.userResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "401":
+          description: Unauthorized error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "409":
+          description: Data conflict error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handlers.errorResponse'
+      summary: Register a new user
+      tags:
+      - Users
+schemes:
+- http
+- https
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and the access token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
